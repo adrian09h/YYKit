@@ -245,7 +245,38 @@ typedef NS_ENUM(NSUInteger, YYTextMoveDirection) {
     _state.showingHighlight = NO;
     self.contentSize = size;
 }
+//// Hide selection View from parent
+///
+- (void)_hideSelectionView {
 
+    
+    _state.selectedWithoutEdit = NO;
+    _state.trackingTouch = NO;
+    _state.trackingGrabber = NO;
+    _state.trackingCaret = NO;
+    _state.trackingPreSelect = NO;
+    _state.touchMoved = NO;
+    _state.deleteConfirm = NO;
+    _state.clearsOnInsertionOnce = NO;
+    _trackingRange = nil;
+    _selectionView.caretBlinks = YES;
+    
+    [self _removeHighlightAnimated:YES];
+    [self _hideMagnifier];
+    [self _endLongPressTimer];
+    [self _endAutoScrollTimer];
+    
+    
+    _selectionView.frame = _containerView.frame;
+    _selectionView.caretBlinks = NO;
+    _selectionView.caretVisible = NO;
+    _selectionView.selectionRects = nil;
+    [[YYTextEffectWindow sharedWindow] hideSelectionDot:_selectionView];
+    
+    _state.showingMenu = NO;
+    UIMenuController *menu = [UIMenuController sharedMenuController];
+    [menu setMenuVisible:NO animated:YES];
+}
 /// Update selection view immediately.
 /// This method should be called after "layout update" finished.
 - (void)_updateSelectionView {
@@ -2706,6 +2737,8 @@ typedef NS_ENUM(NSUInteger, YYTextMoveDirection) {
                 [self _scrollRangeToVisible:_selectedTextRange];
             }
         }
+        
+        [self.delegate textView:self didTapHighlight:_highlight inRange:_highlightRange rect:CGRectMake(0, 0, 0, 0)];
         
         [self _endTouchTracking];
     }
