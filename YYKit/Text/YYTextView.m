@@ -2738,7 +2738,7 @@ typedef NS_ENUM(NSUInteger, YYTextMoveDirection) {
             }
         }
         
-        [self.delegate textView:self didTapHighlight:_highlight inRange:_highlightRange rect:CGRectMake(0, 0, 0, 0)];
+        [self.delegate textView:self didTapEndHighlight:_highlight];
         
         [self _endTouchTracking];
     }
